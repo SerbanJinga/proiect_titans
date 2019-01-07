@@ -11,6 +11,7 @@ public class Hardware {
     public DcMotor backRight = null;
     public DcMotor frontLeft = null;
     public DcMotor frontRight = null;
+    public ModernRoboticsI2cRangeSensor rangeSensor = null;
     //    public DcMotor motorCremaliera = null;
 
 
@@ -27,12 +28,14 @@ public class Hardware {
         backRight = Map.get(DcMotor.class, "bR");
         frontLeft = Map.get(DcMotor.class, "fL");
         frontRight = Map.get(DcMotor.class, "fR");
+        rangeSensor = Map.get(ModernRoboticsI2cRangeSensor.class, "rS");
         //motorCremaliera = Map.get(DcMotor.class, "mC");
 
         backLeft.setPower(0);
         backRight.setPower(0);
         frontLeft.setPower(0);
         frontRight.setPower(0);
+
         //motorCremaliera.setPower(0);
 
         backLeft.setDirection(DcMotor.Direction.REVERSE);

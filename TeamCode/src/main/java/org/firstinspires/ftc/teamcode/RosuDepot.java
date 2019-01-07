@@ -23,6 +23,7 @@ public class RosuDepot extends LinearOpMode {
     public Hardware robot = new Hardware();
     protected ElapsedTime timer = new ElapsedTime();
 
+
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -40,6 +41,7 @@ public class RosuDepot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap);
+
 
         waitForStart();
 
@@ -467,16 +469,16 @@ public class RosuDepot extends LinearOpMode {
         robot.backRight.setPower(0);
 
     }
-
-    public void detectareDistanta(){
-//        if(robot.rangeFinder.getDistance(DistanceUnit.CM) <= 30){
-//            oprireMecanum();
+//
+//    public void detectareDistanta(){
+//        if(robot.rangeSensor.getDistance(DistanceUnit.CM) <= 30){
+//            telemetry.addData()
 ////            rotireSpreDreapta(2000, 0.2);
 //
 //
-
 //
-    }
+//
+//    }
 
 
 

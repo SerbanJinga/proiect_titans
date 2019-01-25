@@ -4,7 +4,9 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+@TeleOp(name = "Aranjare")
 public class Aranjare extends OpMode {
 
 
@@ -26,6 +28,8 @@ public class Aranjare extends OpMode {
         detector.ratioScorer.perfectRatio = 1.0;
 
         detector.enable();
+
+        detector.getCurrentOrder().compareTo(SamplingOrderDetector.GoldLocation.LEFT);
     }
 
 
@@ -43,6 +47,21 @@ public class Aranjare extends OpMode {
     public void loop() {
         telemetry.addData("Current Order", detector.getCurrentOrder().toString());
         telemetry.addData("List Order", detector.getCurrentOrder().toString());
+
+
+        if (detector.getCurrentOrder().compareTo(SamplingOrderDetector.GoldLocation.LEFT) == 0) {
+            telemetry.addData("LEFTUM", "Stanga");
+            telemetry.update();
+        } else if (detector.getCurrentOrder().compareTo(SamplingOrderDetector.GoldLocation.LEFT) == 1) {
+            telemetry.addData("RIGHTUM", "Dreapta");
+            telemetry.update();
+        } else if (detector.getCurrentOrder().compareTo(SamplingOrderDetector.GoldLocation.LEFT) == 2) {
+            telemetry.addData("CENTRUM", "Centru");
+            telemetry.update();
+        } else {
+            telemetry.addData("Sunteti Prosti", "Nu vad nimic ba");
+            telemetry.update();
+        }
 
     }
 

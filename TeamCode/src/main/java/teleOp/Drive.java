@@ -8,24 +8,18 @@ import hardware.Hardware;
 
 @TeleOp(name = "Drive", group = "Pushbot")
 public class Drive extends LinearOpMode {
-
     Hardware robot = new Hardware();
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
+    public void runOpMode() {
 
         robot.init(hardwareMap);
 
         telemetry.log().clear();
-        telemetry.addData("Ready", "Press PLAY!");
+        telemetry.addData("Ready!", "Press PLAY!");
         telemetry.update();
 
-
-        double frontLeftDrive = 0;
-        double frontRightDrive = 0;
-        double backLeftDrive = 0;
-        double backRightDrive = 0;
+        double frontLeftDrive, frontRightDrive, backRightDrive, backLeftDrive = 0;
 
         telemetry.addData("left_X", gamepad1.left_stick_x);
         telemetry.addData("right_X", gamepad1.right_stick_x);
@@ -34,35 +28,15 @@ public class Drive extends LinearOpMode {
 
         waitForStart();
 
-        while(opModeIsActive()){
-            double Speed = -gamepad1.left_stick_y;
-            double Turn = gamepad1.left_stick_x;
-            double Strafe = gamepad1.right_stick_x;
+        while (opModeIsActive()) {
 
-
-            if(gamepad1.right_bumper || gamepad1.left_bumper)
-            {
-                frontLeftDrive = -(+Speed + Turn - Strafe) * 0.2;
-                frontRightDrive = -(+Speed - Turn + Strafe) * 0.2;
-                backLeftDrive = -(+Speed + Turn + Strafe) * 0.2;
-                backRightDrive = -(+Speed - Turn - Strafe) * 0.2;
-            }else{
-                frontLeftDrive = -(+Speed +Turn -Strafe);
-                frontRightDrive = -(+Speed -Turn +Strafe);
-                backLeftDrive = -(+Speed +Turn +Strafe);
-                backRightDrive = -(+Speed -Turn -Strafe);
-            }
-
-            robot.frontRight.setPower(frontRightDrive);
-            robot.frontLeft.setPower(frontLeftDrive);
-            robot.backRight.setPower(backRightDrive);
-            robot.backLeft.setPower(backLeftDrive);
+            displayTelemetry(robot.frontLeft.getCurrentPosition(), robot.frontRight.getCurrentPosition()
+                    ,robot.backLeft.getCurrentPosition(), robot.backRight.getCurrentPosition());
+            mecanumDrive(gamepad1.left_stick_x, (gamepad1.left_trigger - gamepad1.right_trigger)
+                    , -gamepad1.right_stick_x);
         }
-
-        displayTelemetry(frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive);
-
-
     }
+
     public void displayTelemetry(double fLD, double fRD, double bLD, double bRD) {
         telemetry.log().clear();
         telemetry.addData("frontLeft: ", fLD);
@@ -70,6 +44,46 @@ public class Drive extends LinearOpMode {
         telemetry.addData("backLeft: ", bLD);
         telemetry.addData("backRight: ", bRD);
         telemetry.update();
+    }
+
+    public void mecanumDrive(double x, double y, double rotation) {
+
+        double wheelSpeeds[] = new double[4];
+
+        wheelSpeeds[0] = -x + y + rotation;
+        wheelSpeeds[1] = x + y - rotation;
+        wheelSpeeds[2] = x + y + rotation;
+        wheelSpeeds[3] = -x + y - rotation;
+
+        normalizeMecanum(wheelSpeeds);
+
+        robot.frontLeft.setPower(wheelSpeeds[0]);
+        robot.frontRight.setPower(wheelSpeeds[1]);
+        robot.backLeft.setPower(wheelSpeeds[2]);
+        robot.backRight.setPower(wheelSpeeds[3]);
+    }
+
+    private void normalizeMecanum(double[] wheelSpeeds) {
+
+        double maxMagnitude = Math.abs(wheelSpeeds[0]);
+
+        for (int i = 1; i < wheelSpeeds.length; ++i) {
+
+            double magnitude = Math.abs(wheelSpeeds[i]);
+
+            if (magnitude > maxMagnitude) {
+
+                maxMagnitude = magnitude;
+            }
+        }
+
+        if (maxMagnitude > 1.0) {
+
+            for (int i = 0; i < wheelSpeeds.length; ++i) {
+
+                wheelSpeeds[i] /= maxMagnitude;
+            }
+        }
     }
 
 }
